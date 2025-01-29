@@ -10,37 +10,58 @@ import * as THREE from "three";
 let ID_COUNTER = 0;
 
 export interface EntityParams {
-  position: { x: number; y: number; z: number };
+  position?: { x: number; y: number; z: number };
+  scale?: { x: number; y: number; z: number };
 }
 
 export class Entity {
   id: number;
   name: string;
-  object: THREE.Object3D;
+  object: THREE.Object3D | undefined;
+  params: Partial<EntityParams>;
   constructor(
     name: string,
-    object: THREE.Object3D,
-    params: EntityParams = {
+    params: Partial<EntityParams> = {
       position: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
     }
   ) {
     ID_COUNTER += 1;
     this.id = ID_COUNTER;
     this.name = name;
-    this.object = object;
-    this.applyEntityParams(params);
+    this.params = params;
+  }
+
+  async init() {
+    this.object = await this._init();
+    this.applyEntityParams();
+  }
+
+  async _init() {
+    return new THREE.Object3D();
   }
 
   defineObject(): THREE.Object3D {
     return new THREE.Object3D();
   }
 
-  applyEntityParams(params: EntityParams) {
-    this.object.position.set(
-      params.position.x,
-      params.position.y,
-      params.position.z
-    );
+  applyEntityParams() {
+    if (!this.object) return;
+    if (this.params.position) {
+      this.object.position.set(
+        this.params.position.x,
+        this.params.position.y,
+        this.params.position.z
+      );
+    }
+
+    if (this.params.scale) {
+      this.object.scale.set(
+        this.params.scale.x,
+        this.params.scale.y,
+        this.params.scale.z
+      );
+    }
   }
 
   animate() {}

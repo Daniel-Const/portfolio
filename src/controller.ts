@@ -1,7 +1,10 @@
 import { Camera } from "three";
-import { PointerLockControls } from "three/examples/jsm/Addons.js";
+import {
+  OrbitControls,
+  PointerLockControls,
+} from "three/examples/jsm/Addons.js";
 
-export class Controller {
+export class PointerLockController {
   _controls: PointerLockControls;
   moveLeft: boolean = false;
   moveRight: boolean = false;
@@ -81,5 +84,12 @@ export class Controller {
     }
 
     this._controls.update(delta);
+  }
+}
+
+export class OrbitController {
+  _controls: OrbitControls;
+  constructor(camera: Camera, renderer: HTMLElement) {
+    this._controls = new OrbitControls(camera, renderer);
   }
 }

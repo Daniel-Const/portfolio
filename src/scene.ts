@@ -16,14 +16,9 @@ export class SceneManager {
   objects: THREE.Object3D[];
   clock: THREE.Clock;
 
-  constructor() {
+  constructor(width: number, height: number) {
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     this.renderer = new THREE.WebGLRenderer();
     this.entities = [];
     this.objects = [];
@@ -44,7 +39,7 @@ export class SceneManager {
   _initCamera() {
     this.camera.position.z = 5;
     this.camera.position.y = 5;
-    this.camera.position.set(0, 2, 8);
+    this.camera.position.set(2, 3, 3);
   }
 
   _initRenderer() {
@@ -73,10 +68,18 @@ export class SceneManager {
     this.renderer.render(this.scene, this.camera);
   }
 
-  setEntities(entities: Entity[]) {
+  async initEntities(entities: Entity[]) {
     this.entities = entities;
+    for (let i = 0; i < this.entities.length; i++) {
+      await this.entities[i].init();
+    }
+  }
+
+  setEntities() {
     this.entities.forEach((entity) => {
-      this.scene.add(entity.object);
+      if (entity.object) {
+        this.scene.add(entity.object);
+      }
     });
   }
 

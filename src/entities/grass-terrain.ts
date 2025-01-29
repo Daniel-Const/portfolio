@@ -45,44 +45,47 @@ const fragmentShader = `
     }
   `;
 
-const uniforms = {
-  time: {
-    value: 0,
-  },
-};
-
-const leavesMaterial = new THREE.ShaderMaterial({
-  vertexShader,
-  fragmentShader,
-  uniforms,
-  side: THREE.DoubleSide,
-});
-
-const instanceNumber = 5000;
-const dummy = new THREE.Object3D();
-
-const geometry = new THREE.PlaneGeometry(0.1, 1, 1, 4);
-geometry.translate(0, 0.5, 0);
-
-const instancedMesh = new THREE.InstancedMesh(
-  geometry,
-  leavesMaterial,
-  instanceNumber
-);
-
-for (let i = 0; i < instanceNumber; i++) {
-  dummy.position.set((Math.random() - 0.5) * 10, 0, (Math.random() - 0.5) * 10);
-
-  dummy.scale.setScalar(0.5 + Math.random() * 0.5);
-  dummy.rotation.y = Math.random() * Math.PI;
-  dummy.updateMatrix();
-  instancedMesh.setMatrixAt(i, dummy.matrix);
-}
-
 export class GrassTerrain extends Entity {
   leavesMaterial: any;
   clock: THREE.Clock;
   constructor(params?: EntityParams) {
+    const uniforms = {
+      time: {
+        value: 0,
+      },
+    };
+
+    const leavesMaterial = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms,
+      side: THREE.DoubleSide,
+    });
+
+    const instanceNumber = 5000;
+    const dummy = new THREE.Object3D();
+
+    const geometry = new THREE.PlaneGeometry(0.1, 1, 1, 4);
+    geometry.translate(0, 0.5, 0);
+
+    const instancedMesh = new THREE.InstancedMesh(
+      geometry,
+      leavesMaterial,
+      instanceNumber
+    );
+
+    for (let i = 0; i < instanceNumber; i++) {
+      dummy.position.set(
+        (Math.random() - 0.5) * 10,
+        0,
+        (Math.random() - 0.5) * 10
+      );
+
+      dummy.scale.setScalar(0.5 + Math.random() * 0.5);
+      dummy.rotation.y = Math.random() * Math.PI;
+      dummy.updateMatrix();
+      instancedMesh.setMatrixAt(i, dummy.matrix);
+    }
     super("Terrain", instancedMesh, params);
     this.leavesMaterial = leavesMaterial;
     this.clock = new THREE.Clock();
